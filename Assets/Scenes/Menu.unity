@@ -8473,6 +8473,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7480b26b074a3e84f95f9f44b7ac35ff, type: 2}
   - {fileID: 11400000, guid: b100c14d1c9951a42ac26dd2f2b93bc2, type: 2}
   - {fileID: 11400000, guid: 357f154d10c228f4d9ef034c21300042, type: 2}
+  orderByDropdown: {fileID: 7704464948124617357}
 --- !u!1 &1799475828
 GameObject:
   m_ObjectHideFlags: 0
@@ -9465,7 +9466,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Padding: {x: 0, y: 0, z: 0, w: -25}
+  m_Padding: {x: -25, y: 0, z: -25, w: -50}
   m_Softness: {x: 0, y: 50}
 --- !u!114 &2010379885
 MonoBehaviour:
@@ -11692,7 +11693,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Rarity Ascending
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -11719,7 +11720,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26.9
+  m_fontSize: 18
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -12735,21 +12736,13 @@ MonoBehaviour:
   m_ItemImage: {fileID: 0}
   m_Value: 0
   m_Options:
-    m_Options:
-    - m_Text: Rarity Ascending
-      m_Image: {fileID: 0}
-    - m_Text: Rarity Descending
-      m_Image: {fileID: 0}
-    - m_Text: Level Ascending
-      m_Image: {fileID: 0}
-    - m_Text: Level Descending
-      m_Image: {fileID: 0}
+    m_Options: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UpgradeShop, Assembly-CSharp
-        m_MethodName: UpdateDisplay
+      - m_Target: {fileID: 1778469850}
+        m_TargetAssemblyTypeName: HeroSelection, Assembly-CSharp
+        m_MethodName: SortCards
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

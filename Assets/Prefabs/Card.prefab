@@ -278,8 +278,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3db56cedf983b334da2dc3ff384aca76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rarityBackground: {fileID: 1359043423530679868}
+  rarityFrame: {fileID: 1359043423530679868}
   heroImage: {fileID: 6923646585102590946}
+  cardFrames:
+  - frame: {fileID: 21300000, guid: d6f0ffc2a61545e469c15992d6c123ef, type: 3}
+    heroRarity: 0
+  - frame: {fileID: 21300000, guid: 291b8d935506f6948b9eb5f15440de60, type: 3}
+    heroRarity: 1
+  - frame: {fileID: 21300000, guid: a63df5a1368e8d548bf5c2b3e1b0bd41, type: 3}
+    heroRarity: 2
 --- !u!1 &3115538472030105811
 GameObject:
   m_ObjectHideFlags: 0

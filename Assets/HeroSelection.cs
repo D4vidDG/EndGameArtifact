@@ -5,12 +5,16 @@ public class HeroSelection : MonoBehaviour
 {
     [SerializeField] Card cardPrefab;
     [SerializeField] RectTransform grid;
-    [SerializeField] Heroe[] heroes;
+    [SerializeField] Hero[] heroes;
 
+    void Start()
+    {
+        PopulateGrid();
+    }
 
     private void PopulateGrid()
     {
-        foreach (Heroe hero in heroes)
+        foreach (Hero hero in heroes)
         {
             Card cardInstance = Instantiate(cardPrefab);
             cardInstance.SetHero(hero);

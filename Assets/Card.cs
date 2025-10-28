@@ -1,24 +1,16 @@
 using System;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-    [SerializeField] BackgroundByRarity cardByRarity;
+    //[SerializeField] BackgroundByRarity cardByRarity;
+    [SerializeField] Image rarityBackground;
+    [SerializeField] Image heroImage;
 
-    internal void SetHero(Heroe hero)
+
+    public void SetHero(Hero hero)
     {
-        throw new NotImplementedException();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        heroImage.sprite = hero.GetPortrait();
     }
 }

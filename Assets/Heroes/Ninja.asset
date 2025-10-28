@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heroeClass: 2
   rarity: 0
-  portrait: {fileID: 0}
+  portrait: {fileID: 21300000, guid: f2da4afe77098c9419540d06ffd202db, type: 3}

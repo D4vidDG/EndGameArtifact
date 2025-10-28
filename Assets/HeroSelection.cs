@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using static TMPro.TMP_Dropdown;
 
@@ -10,15 +9,15 @@ public class HeroSelection : MonoBehaviour
     [SerializeField] Card cardPrefab;
     [SerializeField] RectTransform grid;
     [SerializeField] Hero[] heroes;
-    [SerializeField] TMP_Dropdown orderByDropdown;
+    [SerializeField] TMP_Dropdown sortByDropdown;
+    [SerializeField] CardSortParams defaultSortParams;
 
-
-    Dictionary<OptionData, CardDisplayParams> displayParamsByDropdownOption;
+    Dictionary<OptionData, CardSortParams> sortParamsByDropdownOption;
     Card[] cards;
 
     void Awake()
     {
-        displayParamsByDropdownOption = new Dictionary<OptionData, CardDisplayParams>();
+        sortParamsByDropdownOption = new Dictionary<OptionData, CardSortParams>();
     }
 
     void Start()
@@ -44,46 +43,23 @@ public class HeroSelection : MonoBehaviour
     {
         grid.transform.DetachChildren();
 
-        CardDisplayParams displayParams = GetDisplayParams();
+        CardSortParams sortParams = GetSortParams();
 
-        switch (displayParams.filter)
+        Array.Sort(cards, new CardComparer(sortParams));
+
+        foreach (Card card in cards)
         {
-            case CardDisplayFilter.Rarity:
-                Array.Sort(cards, new CardRarityComparer());
-                break;
-            case CardDisplayFilter.Level:
-                Array.Sort(cards, new CardLevelComparer());
-                break;
-        }
-
-        switch (displayParams.order)
-        {
-            case CardDisplayOrder.Ascending:
-
-                foreach (Card card in cards)
-                {
-                    card.transform.parent = grid;
-                }
-                break;
-
-            case CardDisplayOrder.Descending:
-
-                for (int i = cards.Length - 1; i >= 0; i--)
-                {
-                    cards[i].transform.parent = grid;
-                }
-
-                break;
+            card.transform.parent = grid;
         }
     }
 
-    private CardDisplayParams GetDisplayParams()
+    private CardSortParams GetSortParams()
     {
-        OptionData selectedOption = orderByDropdown.options[orderByDropdown.value];
+        OptionData selectedOption = sortByDropdown.options[sortByDropdown.value];
 
-        if (displayParamsByDropdownOption.ContainsKey(selectedOption))
+        if (sortParamsByDropdownOption.ContainsKey(selectedOption))
         {
-            return displayParamsByDropdownOption[selectedOption];
+            return sortParamsByDropdownOption[selectedOption];
         }
         else
         {
@@ -94,69 +70,105 @@ public class HeroSelection : MonoBehaviour
 
     private void SetDropdownOptions()
     {
-        foreach (CardDisplayFilter filter in Enum.GetValues(typeof(CardDisplayFilter)))
+        OptionData defaultOption = null;
+
+        foreach (CardSortFilter filter in Enum.GetValues(typeof(CardSortFilter)))
         {
-            foreach (CardDisplayOrder order in Enum.GetValues(typeof(CardDisplayOrder)))
+            foreach (CardSortOrder order in Enum.GetValues(typeof(CardSortOrder)))
             {
                 string dataText = filter.ToString() + " " + order.ToString();
                 OptionData optionData = new(dataText);
-                orderByDropdown.options.Add(optionData);
-                CardDisplayParams displayParams = new(filter, order);
-                displayParamsByDropdownOption.Add(optionData, displayParams);
+                sortByDropdown.options.Add(optionData);
+                CardSortParams displayParams = new(filter, order);
+                sortParamsByDropdownOption.Add(optionData, displayParams);
+
+                if (filter == defaultSortParams.filter && order == defaultSortParams.order)
+                {
+                    defaultOption = optionData;
+                }
             }
         }
-    }
 
-    public class CardRarityComparer : IComparer<Card>
-    {
-        public int Compare(Card x, Card y)
+        if (defaultOption != null)
         {
-            int diff = (int)x.GetHero().GetRarity() - (int)y.GetHero().GetRarity();
-            //sort alphabetically by default
-            if (diff == 0)
-            {
-                return String.Compare(x.GetHero().GetName(), y.GetHero().GetName(), StringComparison.CurrentCultureIgnoreCase);
-            }
-
-            return diff;
+            sortByDropdown.value = sortByDropdown.options.IndexOf(defaultOption);
         }
     }
 
-    public class CardLevelComparer : IComparer<Card>
+    [Serializable]
+    public struct CardSortParams
     {
-        public int Compare(Card x, Card y)
-        {
-            int diff = (int)x.GetHero().GetLevel() - (int)y.GetHero().GetLevel();
-            //sort alphabetically by default
-            if (diff == 0)
-            {
-                return String.Compare(x.GetHero().GetName(), y.GetHero().GetName(), StringComparison.CurrentCultureIgnoreCase);
-            }
+        public CardSortOrder order;
+        public CardSortFilter filter;
 
-            return diff;
-        }
-    }
-
-    public struct CardDisplayParams
-    {
-        public CardDisplayOrder order;
-        public CardDisplayFilter filter;
-
-        public CardDisplayParams(CardDisplayFilter filter, CardDisplayOrder order)
+        public CardSortParams(CardSortFilter filter, CardSortOrder order)
         {
             this.order = order;
             this.filter = filter;
         }
     }
+
+    public class CardComparer : IComparer<Card>
+    {
+        private CardSortParams sortParams;
+
+        public CardComparer(CardSortParams sortParams)
+        {
+            this.sortParams = sortParams;
+        }
+
+        public int Compare(Card x, Card y)
+        {
+            int xValue = 0;
+            int yValue = 0;
+
+            switch (sortParams.filter)
+            {
+                case CardSortFilter.Rarity:
+                    xValue = (int)x.GetHero().GetRarity();
+                    yValue = (int)y.GetHero().GetRarity();
+                    break;
+                case CardSortFilter.Level:
+                    xValue = x.GetHero().GetLevel();
+                    yValue = y.GetHero().GetLevel();
+                    break;
+            }
+
+            int order = 1;
+            switch (sortParams.order)
+            {
+                case CardSortOrder.Ascending:
+                    order = 1;
+                    break;
+
+                case CardSortOrder.Descending:
+
+                    order = -1;
+                    break;
+            }
+
+            int diff = (xValue - yValue) * order;
+
+            //sort alphabetically by default
+            if (diff == 0)
+            {
+                return String.Compare(x.GetHero().GetName(), y.GetHero().GetName(), StringComparison.CurrentCultureIgnoreCase);
+            }
+
+            return diff;
+        }
+    }
+
 }
 
-public enum CardDisplayOrder
+
+public enum CardSortOrder
 {
-    Descending,
-    Ascending
+    Ascending,
+    Descending
 }
 
-public enum CardDisplayFilter
+public enum CardSortFilter
 {
     Rarity,
     Level,

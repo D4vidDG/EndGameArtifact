@@ -8473,7 +8473,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7480b26b074a3e84f95f9f44b7ac35ff, type: 2}
   - {fileID: 11400000, guid: b100c14d1c9951a42ac26dd2f2b93bc2, type: 2}
   - {fileID: 11400000, guid: 357f154d10c228f4d9ef034c21300042, type: 2}
-  orderByDropdown: {fileID: 7704464948124617357}
+  sortByDropdown: {fileID: 7704464948124617357}
+  defaultSortParams:
+    order: 0
+    filter: 0
 --- !u!1 &1799475828
 GameObject:
   m_ObjectHideFlags: 0
@@ -12266,7 +12269,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Order By:'
+  m_text: 'Sort By:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

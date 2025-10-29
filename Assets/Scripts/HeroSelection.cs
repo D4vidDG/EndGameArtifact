@@ -49,7 +49,7 @@ public class HeroSelection : MonoBehaviour
 
         foreach (Card card in cards)
         {
-            card.transform.parent = grid;
+            card.transform.SetParent(grid);
         }
     }
 

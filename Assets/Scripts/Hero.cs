@@ -27,6 +27,11 @@ public class Hero : ScriptableObject
     {
         return this.name;
     }
+
+    public HeroClass GetClass()
+    {
+        return heroeClass;
+    }
 }
 
 public enum HeroRarity

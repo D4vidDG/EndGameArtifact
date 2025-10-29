@@ -12,15 +12,15 @@ public class Card : MonoBehaviour, ISelectHandler, IDeselectHandler
     [SerializeField] RectTransform selectedPanel;
     [SerializeField] Button useButton;
     [SerializeField] Button infoButton;
+    [SerializeField] Button removeButton;
 
     Dictionary<HeroRarity, Sprite> cardFrameByRarity;
     Hero hero;
-    RectTransform rectTransform;
-
-    public RectTransform RectTransform => rectTransform;
 
     HeroInformationPanel heroInformationPanel;
-    DeckCreator deckCreator;
+
+    public static Action<Card> OnUseButtonClicked;
+    public static Action<Card> OnRemoveButtonClicked;
 
     void Awake()
     {
@@ -39,20 +39,20 @@ public class Card : MonoBehaviour, ISelectHandler, IDeselectHandler
         }
 
         heroInformationPanel = FindObjectOfType<HeroInformationPanel>(includeInactive: true);
-        deckCreator = FindObjectOfType<DeckCreator>(includeInactive: true);
-        rectTransform = GetComponent<RectTransform>();
     }
 
     void OnEnable()
     {
-        infoButton.onClick.AddListener(OnInfoButtonClicked);
-        useButton.onClick.AddListener(OnUseButtonClicked);
+        infoButton.onClick.AddListener(OnInfoClicked);
+        useButton.onClick.AddListener(OnUseClicked);
+        removeButton.onClick.AddListener(OnRemoveClicked);
     }
 
     private void OnDisable()
     {
-        if (infoButton != null) infoButton.onClick.RemoveListener(OnInfoButtonClicked);
-        if (useButton != null) useButton.onClick.RemoveListener(OnUseButtonClicked);
+        if (infoButton != null) infoButton.onClick.RemoveListener(OnInfoClicked);
+        if (useButton != null) useButton.onClick.RemoveListener(OnUseClicked);
+        if (removeButton != null) removeButton.onClick.RemoveListener(OnRemoveClicked);
         if (selectedPanel != null) EnableSelectedPanel(false);
     }
 
@@ -88,25 +88,28 @@ public class Card : MonoBehaviour, ISelectHandler, IDeselectHandler
         EnableSelectedPanel(false);
     }
 
-    private void OnUseButtonClicked()
-    {
-        if (!deckCreator.IsDeckFull())
-        {
-            EnableSelectedPanel(false);
-            deckCreator.AddCard(this);
-        }
-    }
-
     private void EnableSelectedPanel(bool enable)
     {
         selectedPanel.gameObject.SetActive(enable);
     }
 
-    private void OnInfoButtonClicked()
+    private void OnInfoClicked()
     {
         heroInformationPanel.SetHero(hero);
         heroInformationPanel.gameObject.SetActive(true);
         EnableSelectedPanel(false);
+    }
+
+    private void OnUseClicked()
+    {
+        EnableSelectedPanel(false);
+        OnUseButtonClicked.Invoke(this);
+
+    }
+    private void OnRemoveClicked()
+    {
+        EnableSelectedPanel(false);
+        OnRemoveButtonClicked.Invoke(this);
     }
 
     [Serializable]

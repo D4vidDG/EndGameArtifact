@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8387860602045221421}
   - component: {fileID: 3892258603881336327}
   - component: {fileID: 5146363177038554852}
+  - component: {fileID: 1396908409270308626}
   m_Layer: 5
   m_Name: DeckSelectionButton
   m_TagString: Untagged
@@ -173,6 +174,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1396908409270308626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1481000373994917246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78f6feb8caeeed4ab88b314f8eb095e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deckNumber: 1
+  text: {fileID: 6263574348582203121}
 --- !u!1 &2575697368554413204
 GameObject:
   m_ObjectHideFlags: 0

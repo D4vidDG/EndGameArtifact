@@ -6,7 +6,12 @@ public class Hero : ScriptableObject
     [SerializeField] HeroClass heroeClass;
     [SerializeField] HeroRarity rarity;
     [SerializeField] Sprite portrait;
-    [SerializeField] int level = 1;
+    [SerializeField] int startLevel = 1;
+
+    void OnEnable()
+    {
+        startLevel = Random.Range(1, 11);
+    }
 
     public Sprite GetPortrait()
     {
@@ -20,7 +25,7 @@ public class Hero : ScriptableObject
 
     public int GetLevel()
     {
-        return level;
+        return startLevel;
     }
 
     public string GetName()

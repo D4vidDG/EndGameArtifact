@@ -14,6 +14,7 @@ public class Card : MonoBehaviour, ISelectHandler, IDeselectHandler
     [SerializeField] Button useButton;
     [SerializeField] Button infoButton;
     [SerializeField] Button removeButton;
+    [SerializeField] LevelUpMeter levelUpMeter;
 
     Hero hero;
 
@@ -43,6 +44,11 @@ public class Card : MonoBehaviour, ISelectHandler, IDeselectHandler
         if (selectedPanel != null) EnableSelectedPanel(false);
     }
 
+    void OnDestroy()
+    {
+        if (hero != null) hero.OnLevelUp -= OnHeroLevelUp;
+    }
+
     public Hero GetHero()
     {
         return hero;
@@ -50,6 +56,8 @@ public class Card : MonoBehaviour, ISelectHandler, IDeselectHandler
 
     public void SetHero(Hero hero)
     {
+        if (hero != null) hero.OnLevelUp -= OnHeroLevelUp;
+
         foreach (Image image in rarityFrames)
         {
             Sprite frame = uiSettings.GetUIInfo(hero.GetRarity()).cardFrame;
@@ -63,20 +71,35 @@ public class Card : MonoBehaviour, ISelectHandler, IDeselectHandler
 
         level.text = hero.GetLevel().ToString();
 
+        levelUpMeter.SetHero(hero);
+        levelUpMeter.UpdateUI();
+
         this.hero = hero;
+
+        hero.OnLevelUp += OnHeroLevelUp;
     }
+
 
     public void OnSelect(BaseEventData eventData)
     {
         level.transform.parent.gameObject.SetActive(false);
+        levelUpMeter.gameObject.SetActive(false);
         EnableSelectedPanel(true);
     }
 
     public void OnDeselect(BaseEventData eventData)
     {
         level.transform.parent.gameObject.SetActive(true);
+        levelUpMeter.gameObject.SetActive(true);
         EnableSelectedPanel(false);
     }
+
+
+    private void OnHeroLevelUp()
+    {
+        level.text = hero.GetLevel().ToString();
+    }
+
 
     private void EnableSelectedPanel(bool enable)
     {
@@ -87,18 +110,20 @@ public class Card : MonoBehaviour, ISelectHandler, IDeselectHandler
     {
         heroInformationPanel.SetHero(hero);
         heroInformationPanel.gameObject.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(null);
         EnableSelectedPanel(false);
     }
 
     private void OnUseClicked()
     {
         EnableSelectedPanel(false);
+        EventSystem.current.SetSelectedGameObject(null);
         OnUseButtonClicked.Invoke(this);
-
     }
     private void OnRemoveClicked()
     {
         EnableSelectedPanel(false);
+        EventSystem.current.SetSelectedGameObject(null);
         OnRemoveButtonClicked.Invoke(this);
     }
 }

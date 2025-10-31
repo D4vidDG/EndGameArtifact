@@ -7,10 +7,13 @@ public class UIBar : MonoBehaviour
 {
     Slider slider;
     float percentage = 100f;
+    Image fillImage;
+
 
     private void Awake()
     {
         slider = GetComponent<Slider>();
+        fillImage = slider.fillRect.GetComponent<Image>();
     }
 
     private void Start()
@@ -37,5 +40,10 @@ public class UIBar : MonoBehaviour
     {
         this.percentage += percentage;
         this.percentage = Mathf.Clamp(this.percentage, 0, 100);
+    }
+
+    public void SetColor(Color color)
+    {
+        if (fillImage != null) fillImage.color = color;
     }
 }

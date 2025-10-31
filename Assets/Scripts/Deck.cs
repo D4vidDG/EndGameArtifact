@@ -7,6 +7,7 @@ public class Deck : MonoBehaviour
 {
     [SerializeField] RectTransform[] cardContainers;
     [SerializeField] Card deckCardPrefab;
+    [SerializeField] Hero[] startHeroes;
 
     List<Card> cardsInDeck;
     Queue<RectTransform> availableContainers;
@@ -21,6 +22,15 @@ public class Deck : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
         availableContainers = new Queue<RectTransform>();
         emptyContainers = new Queue<RectTransform>(cardContainers);
+
+        for (int i = 0; i < startHeroes.Length && i < cardContainers.Length; i++)
+        {
+            Hero hero = startHeroes[i];
+            if (ContainsHero(hero)) continue;
+            Card card = Instantiate(deckCardPrefab);
+            card.SetHero(hero);
+            AddCard(card);
+        }
     }
 
     void OnEnable()
@@ -33,9 +43,9 @@ public class Deck : MonoBehaviour
         Card.OnRemoveButtonClicked -= OnCardRemoveButtonClicked;
     }
 
-    public void AddCard(Card card)
+    public bool AddCard(Card card)
     {
-        if (IsDeckFull()) return;
+        if (IsDeckFull()) return false;
 
         RectTransform container = emptyContainers.Dequeue();
         container.gameObject.SetActive(false);
@@ -48,11 +58,13 @@ public class Deck : MonoBehaviour
         cardsInDeck.Add(cardClone);
 
         LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
+
+        return true;
     }
 
     public bool ContainsHero(Hero hero)
     {
-        if (!IsDeckEmpty()) return true;
+        if (IsDeckEmpty()) return false;
 
         foreach (Card card in cardsInDeck)
         {

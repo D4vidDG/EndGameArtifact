@@ -15,3 +15,4 @@ MonoBehaviour:
   heroeClass: 4
   rarity: 0
   portrait: {fileID: 21300000, guid: 1d828551968e8cd4eb4e8c7d746b75f5, type: 3}
+  heroProgression: {fileID: 11400000, guid: f72a67e82275c2d448e5364c2257f0a6, type: 2}

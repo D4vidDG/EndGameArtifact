@@ -6,26 +6,22 @@ public class DeckSelector : MonoBehaviour
 {
     [SerializeField] Deck[] decks;
     [SerializeField] int deckByDefault;
+    [SerializeField] RectTransform deckSelectionButtons;
 
     public Deck CurrentDeck => currentDeck;
     Deck currentDeck;
-    RectTransform rectTransform;
 
     public Action<Deck, Deck> OnDeckChanged;
 
-    void Awake()
-    {
-        rectTransform = GetComponent<RectTransform>();
-    }
 
     void Start()
     {
-        LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
         foreach (Deck deck in decks)
         {
             deck.gameObject.SetActive(false);
         }
         SelectDeck(deckByDefault);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(deckSelectionButtons);
     }
 
     public void SelectDeck(int number)
@@ -47,6 +43,6 @@ public class DeckSelector : MonoBehaviour
 
         OnDeckChanged?.Invoke(previousDeck, currentDeck);
 
-        LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
+        //LayoutRebuilder.MarkLayoutForRebuild(deckSelectionButtons);
     }
 }

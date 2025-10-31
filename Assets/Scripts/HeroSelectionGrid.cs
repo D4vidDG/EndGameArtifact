@@ -30,6 +30,7 @@ public class HeroSelectionGrid : MonoBehaviour
         Card.OnUseButtonClicked += OnCardUsedButtonClicked;
         Card.OnRemoveButtonClicked += OnCardRemoveButtonClicked;
         deckSelector.OnDeckChanged += OnDeckChange;
+        Hero.OnAnyHeroLevelUp += OnHeroLevelUp;
     }
 
     void OnDisable()
@@ -37,6 +38,7 @@ public class HeroSelectionGrid : MonoBehaviour
         Card.OnUseButtonClicked -= OnCardUsedButtonClicked;
         Card.OnRemoveButtonClicked -= OnCardRemoveButtonClicked;
         deckSelector.OnDeckChanged -= OnDeckChange;
+        Hero.OnAnyHeroLevelUp -= OnHeroLevelUp;
     }
 
     void Start()
@@ -55,70 +57,13 @@ public class HeroSelectionGrid : MonoBehaviour
             cardInstance.SetHero(hero);
             allCards.Add(cardInstance);
             gridCardObjectByHero.Add(hero, cardInstance);
-        }
-    }
-
-    void OnCardUsedButtonClicked(Card card)
-    {
-        deckSelector.CurrentDeck.AddCard(card);
-        card.gameObject.SetActive(false);
-    }
-
-    private void OnCardRemoveButtonClicked(Card card)
-    {
-        EnableGridCard(card, true);
-    }
-
-    private void OnDeckChange(Deck previousDeck, Deck currentDeck)
-    {
-        if (previousDeck != null)
-        {
-            foreach (Card previousDeckCard in previousDeck.GetCards())
+            if (deckSelector.CurrentDeck.ContainsHero(hero))
             {
-                EnableGridCard(previousDeckCard, true);
+                cardInstance.gameObject.SetActive(false);
             }
         }
-
-        foreach (Card currentDeckCard in currentDeck.GetCards())
-        {
-            EnableGridCard(currentDeckCard, false);
-        }
     }
 
-    private void EnableGridCard(Card card, bool enable)
-    {
-        Card gridCard = gridCardObjectByHero[card.GetHero()];
-        gridCard.gameObject.SetActive(enable);
-    }
-
-    private void SortCards()
-    {
-        grid.transform.DetachChildren();
-
-        CardSortParams sortParams = GetSortParams();
-
-        allCards.Sort(new CardComparer(sortParams));
-
-        foreach (Card card in allCards)
-        {
-            card.transform.SetParent(grid);
-        }
-    }
-
-    private CardSortParams GetSortParams()
-    {
-        OptionData selectedOption = sortByDropdown.options[sortByDropdown.value];
-
-        if (sortParamsByDropdownOption.ContainsKey(selectedOption))
-        {
-            return sortParamsByDropdownOption[selectedOption];
-        }
-        else
-        {
-            Debug.LogError("OrderBy Dropdown opton is not defined. Option:" + selectedOption.text);
-            return default;
-        }
-    }
 
     private void SetDropdownOptions()
     {
@@ -144,6 +89,81 @@ public class HeroSelectionGrid : MonoBehaviour
         if (defaultOption != null)
         {
             sortByDropdown.value = sortByDropdown.options.IndexOf(defaultOption);
+        }
+    }
+
+    private void SortCards()
+    {
+        grid.transform.DetachChildren();
+
+        CardSortParams sortParams = GetSortParams();
+
+        allCards.Sort(new CardComparer(sortParams));
+
+        foreach (Card card in allCards)
+        {
+            card.transform.SetParent(grid);
+        }
+    }
+
+    void OnCardUsedButtonClicked(Card card)
+    {
+        if (deckSelector.CurrentDeck.AddCard(card))
+        {
+            card.gameObject.SetActive(false);
+        }
+    }
+
+    private void OnCardRemoveButtonClicked(Card card)
+    {
+        EnableGridCard(card, true);
+    }
+
+    private void OnDeckChange(Deck previousDeck, Deck currentDeck)
+    {
+        if (previousDeck != null)
+        {
+            foreach (Card previousDeckCard in previousDeck.GetCards())
+            {
+                EnableGridCard(previousDeckCard, true);
+            }
+        }
+
+        foreach (Card currentDeckCard in currentDeck.GetCards())
+        {
+            EnableGridCard(currentDeckCard, false);
+        }
+    }
+
+    private void OnHeroLevelUp()
+    {
+        if (GetSortParams().filter == CardSortFilter.Level)
+        {
+            SortCards();
+        }
+    }
+
+    private void EnableGridCard(Card card, bool enable)
+    {
+        if (gridCardObjectByHero.ContainsKey(card.GetHero()))
+        {
+            Card gridCard = gridCardObjectByHero[card.GetHero()];
+            gridCard.gameObject.SetActive(enable);
+        }
+    }
+
+    private CardSortParams GetSortParams()
+    {
+        OptionData selectedOption = sortByDropdown.options[sortByDropdown.value];
+
+        if (sortParamsByDropdownOption.ContainsKey(selectedOption))
+        {
+            return sortParamsByDropdownOption[selectedOption];
+        }
+        else
+        {
+            Debug.LogError("OrderBy Dropdown opton is not defined. Option:" + selectedOption.text);
+            return default;
         }
     }
 
